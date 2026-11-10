@@ -2,7 +2,7 @@
 // Guarda toda la app en el dispositivo al instalarla y desde entonces la sirve
 // SOLO desde esa copia local: nunca pide nada a Internet por su cuenta.
 // Al publicar cambios, sube el número de CACHE para que el iPhone recoja la versión nueva.
-const CACHE = 'tempo-v2';
+const CACHE = 'tempo-v3';
 // Imprescindibles: si falta alguno, no se instala.
 const CORE = [
   './',

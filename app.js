@@ -265,7 +265,7 @@ const S = {
   presetTitle: null,
   presets: loadPresets(),
   history: (LS.get('history', []) || []).filter((h) => h && MODES[h.mode]),
-  settings: Object.assign({ fullColor: true, keepAwake: true }, LS.get('settings', {})),
+  settings: Object.assign({ fullColor: true, keepAwake: true, palette: 'sobrio' }, LS.get('settings', {})),
   phases: [],
   idx: 0,
   running: false,
@@ -788,6 +788,13 @@ function viewSettings() {
         ${row('fullColor', 'Pantalla a color', 'El fondo cambia de color con cada fase')}
         ${row('keepAwake', 'Mantener pantalla encendida', 'Mientras el temporizador está abierto')}
       </div>
+      <h2 class="overline sm sec" style="padding-top:8px">Colores</h2>
+      <div class="card divided">
+        <div class="segblock"><span>Intensidad</span><div class="seg" role="radiogroup">${[['sobrio', 'Sobrio'], ['original', 'Original'], ['intenso', 'Intenso']].map(([v, l]) =>
+          `<button role="radio" aria-checked="${(st.palette || 'sobrio') === v}" data-act="setPalette" data-arg="${v}">${l}</button>`).join('')}</div>
+          <p class="hint">Compáralo con tu Android al lado y quédate con el que más se parezca. «Original» usa exactamente los mismos colores; «Sobrio» los suaviza para la pantalla del iPhone.</p>
+        </div>
+      </div>
       <div class="swatches"><span style="background:${HEX.prep}">Prepárate</span><span style="background:${HEX.work}">Trabajo</span><span style="background:${HEX.rest}">Descanso</span></div>
       <h2 class="overline sm sec" style="padding-top:8px">Privacidad</h2>
       <div class="card info">
@@ -833,6 +840,7 @@ function render(fresh) {
   const sc2 = app.querySelector('.scroll');
   if (sc2) sc2.scrollTop = keepScroll;
   window.scrollTo(0, keepY);
+  document.documentElement.dataset.palette = S.settings.palette || 'sobrio';
   let bg = 'var(--bg)';
   if (S.screen === 'timer' && S.settings.fullColor && S.phases[S.idx]) bg = HEX[S.phases[S.idx].type];
   document.body.style.backgroundColor = bg;
@@ -1031,6 +1039,11 @@ const ACT = {
     LS.set('settings', S.settings);
     render();
     Wake.update();
+  },
+  setPalette(v) {
+    S.settings = Object.assign({}, S.settings, { palette: v });
+    LS.set('settings', S.settings);
+    render();
   },
   askClearHistory() {
     S.dialog = { kind: 'confirm', title: '¿Borrar historial?', text: 'Se eliminarán todos los entrenos completados. Tus entrenos guardados no se tocan.', ok: 'Borrar', act: 'clearHistory' };

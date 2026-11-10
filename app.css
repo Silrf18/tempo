@@ -15,9 +15,10 @@
   --cond: 'BarlowC', 'Barlow Condensed', 'Arial Narrow', sans-serif;
   color-scheme: dark;
 }
-/* Pantallas de gama amplia (todos los iPhone modernos): colores más vivos que los que permite sRGB. */
+/* Paletas (Ajustes › Colores). "original" = los mismos códigos que la app de Android (valores de :root). */
+:root[data-palette="sobrio"] { --volt: #C4E94E; --blue: #63A8E4; --orange: #EB8947; }
 @media (color-gamut: p3) {
-  :root {
+  :root[data-palette="intenso"] {
     --volt: color(display-p3 0.80 1 0.16);
     --blue: color(display-p3 0.26 0.66 1);
     --orange: color(display-p3 1 0.47 0.12);
@@ -62,7 +63,7 @@ svg.f { fill: currentColor; stroke: none; flex: none; }
   background: var(--s1); border: 1px solid var(--line); color: var(--text);
 }
 .cbtn.volt { background: var(--volt); color: var(--bg); border: 0; }
-.chip { width: 36px; height: 36px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; background: rgba(212,255,63,.12); color: var(--volt); }
+.chip { width: 36px; height: 36px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; background: rgba(212,255,63,.12); background: color-mix(in srgb, var(--volt) 12%, transparent); color: var(--volt); }
 
 .topbar { display: flex; align-items: center; height: 44px; flex: none; }
 .topbar .title { flex: 1; text-align: center; padding: 0 8px; font-family: var(--cond); font-weight: 800; font-style: italic; font-size: 26px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -149,7 +150,7 @@ svg.f { fill: currentColor; stroke: none; flex: none; }
 .tick .tb { width: 24px; height: 32px; display: flex; align-items: center; justify-content: center; }
 .tick .td { border-radius: 50%; background: var(--dim); transition: width .12s ease, height .12s ease; }
 .tick.on .td { background: var(--volt); }
-.tick.zero.on .td { box-shadow: 0 0 0 5px rgba(212,255,63,.18); }
+.tick.zero.on .td { box-shadow: 0 0 0 5px rgba(212,255,63,.18); box-shadow: 0 0 0 5px color-mix(in srgb, var(--volt) 18%, transparent); }
 .tick .tl { font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tick.on .tl { font-weight: 700; color: var(--text); }
 .caption { min-height: 34px; font-size: 13px; line-height: 1.3; color: var(--muted); }
