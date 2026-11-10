@@ -1,7 +1,8 @@
 // Tempo — service worker.
 // Guarda toda la app en el dispositivo al instalarla y desde entonces la sirve
-// SOLO desde esa copia local: nunca pide nada a Internet.
-const CACHE = 'tempo-v1';
+// SOLO desde esa copia local: nunca pide nada a Internet por su cuenta.
+// Al publicar cambios, sube el número de CACHE para que el iPhone recoja la versión nueva.
+const CACHE = 'tempo-v2';
 // Imprescindibles: si falta alguno, no se instala.
 const CORE = [
   './',
@@ -12,6 +13,7 @@ const CORE = [
   './icon-180.png',
   './icon-192.png',
   './icon-512.png',
+  './icon-1024.png',
 ];
 // Fuentes: si faltara alguna, la app usa la del sistema y sigue funcionando sin conexión.
 const FONTS = [
@@ -26,11 +28,13 @@ const FONTS = [
   './fonts/barlowcond_bolditalic.ttf',
   './fonts/barlowcond_extrabolditalic.ttf',
 ];
+// 'reload' evita copias antiguas guardadas por el navegador al actualizar.
+const fresh = (u) => new Request(u, { cache: 'reload' });
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE)
-      .then((c) => c.addAll(CORE).then(() => Promise.all(FONTS.map((f) => c.add(f).catch(() => {})))))
+      .then((c) => c.addAll(CORE.map(fresh)).then(() => Promise.all(FONTS.map((f) => c.add(fresh(f)).catch(() => {})))))
       .then(() => self.skipWaiting())
   );
 });

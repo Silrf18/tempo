@@ -15,6 +15,14 @@
   --cond: 'BarlowC', 'Barlow Condensed', 'Arial Narrow', sans-serif;
   color-scheme: dark;
 }
+/* Pantallas de gama amplia (todos los iPhone modernos): colores más vivos que los que permite sRGB. */
+@media (color-gamut: p3) {
+  :root {
+    --volt: color(display-p3 0.80 1 0.16);
+    --blue: color(display-p3 0.26 0.66 1);
+    --orange: color(display-p3 1 0.47 0.12);
+  }
+}
 * { box-sizing: border-box; }
 html, body {
   margin: 0; background: var(--bg); color: var(--text);

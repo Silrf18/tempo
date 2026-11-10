@@ -69,8 +69,9 @@ function fieldLabel(m, k) {
   return over[k] || base[k];
 }
 
-const HEX = { prep: '#FF8A3D', work: '#D4FF3F', rest: '#5CB4FF', setrest: '#5CB4FF' };
-const fieldColor = (k) => (k === 'prep' ? HEX.prep : k === 'work' ? HEX.work : k === 'rest' || k === 'setRest' ? HEX.rest : '#F4F5F1');
+// Colores de fase como variables CSS: en el iPhone usan la gama ampliada (Display P3) de app.css.
+const HEX = { prep: 'var(--orange)', work: 'var(--volt)', rest: 'var(--blue)', setrest: 'var(--blue)' };
+const fieldColor = (k) => (k === 'prep' ? HEX.prep : k === 'work' ? HEX.work : k === 'rest' || k === 'setRest' ? HEX.rest : 'var(--text)');
 
 function buildPhases(m, c) {
   const P = [];
@@ -832,9 +833,10 @@ function render(fresh) {
   const sc2 = app.querySelector('.scroll');
   if (sc2) sc2.scrollTop = keepScroll;
   window.scrollTo(0, keepY);
-  let bg = '#0A0B0D';
+  let bg = 'var(--bg)';
   if (S.screen === 'timer' && S.settings.fullColor && S.phases[S.idx]) bg = HEX[S.phases[S.idx].type];
   document.body.style.backgroundColor = bg;
+  document.documentElement.style.backgroundColor = bg;
   if (S.screen === 'timer') {
     bindTimer();
     tickUI();
@@ -1123,6 +1125,19 @@ render(true);
 
 // Guarda la app en el dispositivo para que funcione sin conexión (requiere https o el propio PC).
 if ('serviceWorker' in navigator && window.isSecureContext) {
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  // Cuando llega una versión nueva, recarga sola (nunca en mitad de un entreno).
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloaded) return;
+    const reload = () => {
+      if (reloaded) return;
+      if (S.screen === 'timer') { setTimeout(reload, 5000); return; }
+      reloaded = true;
+      location.reload();
+    };
+    reload();
+  });
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
